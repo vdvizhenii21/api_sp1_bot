@@ -11,6 +11,7 @@ load_dotenv()
 PRAKTIKUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+URL = os.getenv('URL_PRAKTIKUM')
 
 
 def parse_homework_status(homework):
@@ -27,11 +28,14 @@ def parse_homework_status(homework):
         verdict = (
             'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
         )
+    else:
+        verdict = (
+            'Некорректный статус, невозможно отобразить информацию.'
+        )
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
 def get_homework_statuses(current_timestamp):
-    URL = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
     headers = {'Authorization': f'OAuth {PRAKTIKUM_TOKEN}'}
     data = {'from_date': current_timestamp}
     current_timestamp = current_timestamp or int(time.time())
@@ -68,9 +72,10 @@ def main():
                 'current_date', current_timestamp
             )  # обновить timestamp
             time.sleep(300)  # опрашивать раз в пять минут
-        except (requests.exceptions.RequestException, ValueError) as error:
-            print(f'Бот столкнулся с ошибкой: {error}')
-        time.sleep(5)
+        except (requests.exceptions.RequestException, ValueError) as e:
+            logging.error(f'Бот столкнулся с ошибкой: {e}')
+            time.sleep(5)
+        return {}
 
 
 if __name__ == '__main__':
