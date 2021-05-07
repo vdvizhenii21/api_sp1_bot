@@ -72,10 +72,9 @@ def main():
                 'current_date', current_timestamp
             )  # обновить timestamp
             time.sleep(300)  # опрашивать раз в пять минут
-        except (requests.exceptions.RequestException, ValueError) as e:
+        except Exception as e:
             logging.error(f'Бот столкнулся с ошибкой: {e}')
             time.sleep(5)
-        return {}
 
 
 if __name__ == '__main__':
